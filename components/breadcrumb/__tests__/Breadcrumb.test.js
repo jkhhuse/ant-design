@@ -2,9 +2,11 @@ import React from 'react';
 import { mount, render } from 'enzyme';
 import Breadcrumb from '../index';
 import mountTest from '../../../tests/shared/mountTest';
+import rtlTest from '../../../tests/shared/rtlTest';
 
 describe('Breadcrumb', () => {
   mountTest(Breadcrumb);
+  rtlTest(Breadcrumb);
 
   const errorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -100,6 +102,31 @@ describe('Breadcrumb', () => {
       },
     ];
     const wrapper = render(<Breadcrumb routes={routes} />);
+    expect(wrapper).toMatchSnapshot();
+  });
+
+  it('props#linkRender and props#nameRender do not warn anymore', () => {
+    const linkRender = jest.fn();
+    const nameRender = jest.fn();
+    mount(
+      <Breadcrumb linkRender={linkRender} nameRender={nameRender}>
+        <Breadcrumb.Item />
+        <Breadcrumb.Item>xxx</Breadcrumb.Item>
+      </Breadcrumb>,
+    );
+
+    expect(errorSpy.mock.calls.length).toBe(0);
+    expect(linkRender).not.toHaveBeenCalled();
+    expect(nameRender).not.toHaveBeenCalled();
+  });
+
+  it('should support custom attribute', () => {
+    const wrapper = render(
+      <Breadcrumb data-custom="custom">
+        <Breadcrumb.Item data-custom="custom-item">xxx</Breadcrumb.Item>
+        <Breadcrumb.Item>yyy</Breadcrumb.Item>
+      </Breadcrumb>,
+    );
     expect(wrapper).toMatchSnapshot();
   });
 });

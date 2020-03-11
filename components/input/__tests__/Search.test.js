@@ -4,10 +4,12 @@ import Search from '../Search';
 import Button from '../../button';
 import focusTest from '../../../tests/shared/focusTest';
 import mountTest from '../../../tests/shared/mountTest';
+import rtlTest from '../../../tests/shared/rtlTest';
 
 describe('Input.Search', () => {
   focusTest(Search);
   mountTest(Search);
+  rtlTest(Search);
 
   it('should support custom button', () => {
     const wrapper = mount(<Search enterButton={<button type="button">ok</button>} />);
@@ -29,6 +31,13 @@ describe('Input.Search', () => {
   it('should disable enter button when disabled prop is true', () => {
     const wrapper = mount(<Search placeholder="input search text" enterButton disabled />);
     expect(wrapper.find('.ant-btn-primary[disabled]')).toHaveLength(1);
+  });
+
+  it('should disable search icon when disabled prop is true', () => {
+    const onSearch = jest.fn();
+    const wrapper = mount(<Search defaultValue="search text" onSearch={onSearch} disabled />);
+    wrapper.find('.anticon-search').simulate('click');
+    expect(onSearch).toHaveBeenCalledTimes(0);
   });
 
   it('should trigger onSearch when click search icon', () => {
@@ -151,5 +160,31 @@ describe('Input.Search', () => {
       .simulate('click');
     expect(onSearch).toHaveBeenLastCalledWith('', expect.anything());
     expect(onChange).toHaveBeenCalled();
+  });
+
+  it('should support loading', () => {
+    const wrapper = mount(<Search loading />);
+    const wrapperWithEnterButton = mount(<Search loading enterButton />);
+    expect(wrapper.render()).toMatchSnapshot();
+    expect(wrapperWithEnterButton.render()).toMatchSnapshot();
+  });
+
+  it('should support addonAfter and suffix for loading', () => {
+    const wrapper = mount(<Search loading suffix="suffix" addonAfter="addonAfter" />);
+    const wrapperWithEnterButton = mount(
+      <Search loading enterButton suffix="suffix" addonAfter="addonAfter" />,
+    );
+    expect(wrapper.render()).toMatchSnapshot();
+    expect(wrapperWithEnterButton.render()).toMatchSnapshot();
+  });
+
+  it('should support invalid suffix', () => {
+    const wrapper = mount(<Search suffix={[]} />);
+    expect(wrapper.render()).toMatchSnapshot();
+  });
+
+  it('should support invalid addonAfter', () => {
+    const wrapper = mount(<Search addonAfter={[]} enterButton />);
+    expect(wrapper.render()).toMatchSnapshot();
   });
 });
