@@ -23,7 +23,8 @@ const { Option } = Select;
 
 let docsearch: any;
 if (typeof window !== 'undefined') {
-  docsearch = require('docsearch.js'); // eslint-disable-line
+  // eslint-disable-next-line global-require
+  docsearch = require('docsearch.js');
 }
 
 function initDocSearch(locale: string) {
@@ -38,8 +39,8 @@ function initDocSearch(locale: string) {
     algoliaOptions: { facetFilters: [`tags:${lang}`] },
     transformData(hits: { url: string }[]) {
       hits.forEach(hit => {
-        hit.url = hit.url.replace('ant.design', window.location.host); // eslint-disable-line
-        hit.url = hit.url.replace('https:', window.location.protocol); // eslint-disable-line
+        hit.url = hit.url.replace('ant.design', window.location.host);
+        hit.url = hit.url.replace('https:', window.location.protocol);
       });
       return hits;
     },
@@ -65,7 +66,7 @@ interface HeaderState {
 class Header extends React.Component<HeaderProps, HeaderState> {
   static contextTypes = {
     router: PropTypes.object.isRequired,
-    theme: PropTypes.oneOf(['default', 'dark']),
+    theme: PropTypes.oneOf(['default', 'dark', 'compact']),
     direction: PropTypes.string,
   };
 
@@ -130,6 +131,17 @@ class Header extends React.Component<HeaderProps, HeaderState> {
     return 'LTR';
   };
 
+  getDropdownStyle = (): React.CSSProperties => {
+    const { direction } = this.context;
+    if (direction === 'rtl') {
+      return {
+        direction: 'ltr',
+        textAlign: 'right',
+      };
+    }
+    return {};
+  };
+
   onMenuVisibleChange = (visible: boolean) => {
     this.setState({
       menuVisible: visible,
@@ -173,7 +185,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
             themeConfig,
             intl: { locale },
           } = this.props;
-          const docVersions = { ...themeConfig.docVersions, [antdVersion]: antdVersion };
+          const docVersions = { [antdVersion]: antdVersion, ...themeConfig.docVersions };
           const versionOptions = Object.keys(docVersions).map(version => (
             <Option value={docVersions[version]} key={version}>
               {version}
@@ -232,6 +244,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
               size="small"
               defaultValue={antdVersion}
               onChange={this.handleVersionChange}
+              dropdownStyle={this.getDropdownStyle()}
               getPopupContainer={trigger => trigger.parentNode}
             >
               {versionOptions}
@@ -298,7 +311,7 @@ class Header extends React.Component<HeaderProps, HeaderState> {
                   <UnorderedListOutlined className="nav-phone-icon" onClick={this.handleShowMenu} />
                 </Popover>
               )}
-              <Row style={{ flexFlow: 'nowrap' }}>
+              <Row style={{ flexFlow: 'nowrap', height: 64 }}>
                 <Col {...colProps[0]}>
                   <Logo {...sharedProps} />
                 </Col>

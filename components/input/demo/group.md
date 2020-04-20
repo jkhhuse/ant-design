@@ -84,6 +84,11 @@ const App = () => (
     </Input.Group>
     <br />
     <Input.Group compact>
+      <Input style={{ width: '20%' }} defaultValue="0571" />
+      <Input.Search style={{ width: '30%' }} defaultValue="26888888" />
+    </Input.Group>
+    <br />
+    <Input.Group compact>
       <Select defaultValue="Option1">
         <Option value="Option1">Option1</Option>
         <Option value="Option2">Option2</Option>
@@ -95,6 +100,11 @@ const App = () => (
     <Input.Group compact>
       <Input style={{ width: '50%' }} defaultValue="input content" />
       <DatePicker style={{ width: '50%' }} />
+    </Input.Group>
+    <br />
+    <Input.Group compact>
+      <Input style={{ width: '30%' }} defaultValue="input content" />
+      <DatePicker.RangePicker style={{ width: '70%' }} />
     </Input.Group>
     <br />
     <Input.Group compact>
